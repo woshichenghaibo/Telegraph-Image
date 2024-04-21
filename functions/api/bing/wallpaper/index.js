@@ -9,7 +9,7 @@ export async function onRequest(context) {
       data, // arbitrary space for passing data between middlewares
     } = context;
     //const res = await fetch(`https://cn.bing.com/HPImageArchive.aspx?format=js&idx=1&n=1`);
-    const res = await fetch(`https://tu.gegebu.ru/wallpaper.html`);
+    const res = await fetch(`/wallpaper.html`);
     const bing_data = await res.json();
     const return_data={
         "status":true,
