@@ -3,7 +3,7 @@ export async function onRequest(context) {
   // 并且你有5张图片分别命名为 wallpaper1.jpg, wallpaper2.jpg, ..., wallpaper5.jpg
   const localImagePaths = [
     '/wallpaper1.png',
-    'wallpaper2.jpg',
+    'wallpaper1.png',
     'wallpaper1.png',
     'wallpaper4.jpg',
     'wallpaper5.jpg'
