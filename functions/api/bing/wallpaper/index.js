@@ -4,7 +4,7 @@ export async function onRequest(context) {
   const localImagePaths = [
     'wallpaper1.png',
     'wallpaper2.jpg',
-    'wallpaper3.jpg',
+    'wallpaper1.png',
     'wallpaper4.jpg',
     'wallpaper5.jpg'
   ];
