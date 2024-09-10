@@ -14,7 +14,7 @@ export async function onRequestPost(context) {  // Contents of context object
     const cookiePassword = cookies.split(';').find(cookie => cookie.trim().startsWith('CFP_PASSWORD='));
     const extractedPassword = cookiePassword ? cookiePassword.split('=')[1].trim() : null;
     if (extractedPassword !== env.CFP_PASSWORD) {
-         return new Response('Unauthorized: Invalid password', { status: 403 });
+         //return new Response('Unauthorized: Invalid password', { status: 403 });
     }
     const clonedRequest = request.clone();
     await errorHandling(context);
@@ -30,11 +30,11 @@ export async function onRequestPost(context) {  // Contents of context object
     const fileId = new Date().getTime();
     const fileExtension = fileName.split('.').pop();
     const key=fileId+"."+fileExtension;
-    const newFilePath=`/file/v1/${key}`
+    const newFilePath=`/file/v1/${key}`;
+    console.log(newFilePath);
+    console.log(contentType);
     try{
-        await env.img_static.put(key, fileContent, {
-            metadata: { contentType }
-        });       
+        await env.img_static.put(newFilePath,request.body);       
         // await env.img_url.put(key, "", {
         //     metadata: { ListType: "None", Label: "None", TimeStamp: fileId },
         // });  
