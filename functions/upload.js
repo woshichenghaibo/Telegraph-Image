@@ -35,7 +35,7 @@ export async function onRequestPost(context) {  // Contents of context object
     console.log(contentType);
     try{
         await env.img_static.put(newFilePath, fileContent, {
-            metadata: { contentType }
+            metadata: { contentType:contentType,ListType: "None", Label: "None", TimeStamp: fileId  }
         });       
         // await env.img_url.put(key, "", {
         //     metadata: { ListType: "None", Label: "None", TimeStamp: fileId },
