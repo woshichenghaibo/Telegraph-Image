@@ -26,7 +26,7 @@ export async function onRequest(context) {  // Contents of context object
             return response;
         }
     }else{
-        response = fetch('https://telegra.ph/' + url.pathname + url.search, {
+        const response = fetch('https://telegra.ph/' + url.pathname + url.search, {
             method: request.method,
             headers: request.headers,
             body: request.body,
