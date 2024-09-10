@@ -29,14 +29,15 @@ export async function onRequestPost(context) {  // Contents of context object
 
     const fileId = new Date().getTime();
     const fileExtension = fileName.split('.').pop();
-    const newFileName = `${fileId}.${fileExtension}`;
+    const newFilePath = `/file/v1/${fileId}.${fileExtension}`;
    
     try{
-        await env.img_static.put(params.id+"."+fileExtension,fileContent);
+        await env.img_static.put(newFilePath,fileContent);
+        await env.img_url.put(fileId,newFilePath);
     }catch(error){
         return new Response(`Upload fail`, { status: 400 });
     }
-    return new Response(`[{\"src\":\"${newFileName}\"}]`);
+    return new Response(`[{\"src\":\"${newFilePath}\"}]`);
 }
 
 async function parseMultipartFormData(request) {
