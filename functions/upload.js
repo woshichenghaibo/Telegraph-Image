@@ -57,36 +57,50 @@ async function parseMultipartFormData(request) {
         return null;
     }
 
-    const boundary = boundaryMatch[1];
+    const boundary = `--${boundaryMatch[1]}`;
     const reader = request.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
+    let chunks = [];
     let formData = {};
 
+    // Read all chunks of the request body
     while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        buffer += decoder.decode(value, { stream: true });
+        chunks.push(value);
+    }
 
-        const parts = buffer.split(`--${boundary}`);
-        buffer = parts.pop() || '';
+    // Combine all chunks into one Uint8Array
+    const body = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+    let offset = 0;
+    for (const chunk of chunks) {
+        body.set(chunk, offset);
+        offset += chunk.length;
+    }
 
-        for (const part of parts) {
-            if (part.trim() === '' || part.startsWith('--')) continue;
+    // Convert Uint8Array to string for parsing headers and form fields
+    const textBody = new TextDecoder().decode(body);
+    const parts = textBody.split(boundary);
 
-            const [headersPart, body] = part.split('\r\n\r\n');
-            if (headersPart && body) {
-                const headers = headersPart.split('\r\n');
-                const contentDispositionHeader = headers.find(header => header.startsWith('Content-Disposition:'));
-                const contentTypeHeader = headers.find(header => header.startsWith('Content-Type:'));
+    for (const part of parts) {
+        if (part.trim() === '' || part.startsWith('--')) continue;
 
-                if (contentDispositionHeader) {
-                    const fileNameMatch = contentDispositionHeader.match(/filename="(.+?)"/);
-                    if (fileNameMatch) {
-                        const fileName = fileNameMatch[1];
-                        const contentType = contentTypeHeader ? contentTypeHeader.split(':')[1].trim() : 'application/octet-stream';
-                        formData.file = { fileName, fileContent: body, contentType };
-                    }
+        const [headersPart, bodyContent] = part.split('\r\n\r\n');
+        if (headersPart && bodyContent) {
+            const headers = headersPart.split('\r\n');
+            const contentDispositionHeader = headers.find(header => header.startsWith('Content-Disposition:'));
+            const contentTypeHeader = headers.find(header => header.startsWith('Content-Type:'));
+
+            if (contentDispositionHeader) {
+                const fileNameMatch = contentDispositionHeader.match(/filename="(.+?)"/);
+                if (fileNameMatch) {
+                    const fileName = fileNameMatch[1];
+                    const contentType = contentTypeHeader ? contentTypeHeader.split(':')[1].trim() : 'application/octet-stream';
+
+                    // Convert bodyContent to binary data (fileContent)
+                    const start = textBody.indexOf(bodyContent);
+                    const fileContent = body.slice(start, start + bodyContent.length);
+
+                    formData.file = { fileName, fileContent, contentType };
                 }
             }
         }
