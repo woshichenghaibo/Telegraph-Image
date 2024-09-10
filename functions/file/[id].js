@@ -9,8 +9,9 @@ export async function onRequest(context) {  // Contents of context object
     } = context;
 
     const url = new URL(request.url);
-    
-    const response = fetch('https://telegra.ph/' + url.pathname + url.search, {
+    const path=url.pathname + url.search
+    const time = new Date().time();
+    const response = time >= 1725946746270 ? env.img_static.get(path) : fetch('https://telegra.ph/' + url.pathname + url.search, {
         method: request.method,
         headers: request.headers,
         body: request.body,
