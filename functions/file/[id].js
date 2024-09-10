@@ -20,10 +20,22 @@ export async function onRequest(context) {  // Contents of context object
     if (isFileNameAllDigits(path)) {
         const imgContent = await env.img_static.get(path);
         if (imgContent) {
+            const extension = path.split('.').pop();
+            const mimeTypes = {
+                'png': 'image/png',
+                'jpg': 'image/jpeg',
+                'jpeg': 'image/jpeg',
+                'gif': 'image/gif',
+                'mp4':'video/mp4'
+            };
+            const contentType = (httpMetadata && httpMetadata['content-type']) 
+                ? httpMetadata['content-type'] 
+                : mimeTypes[extension] || 'application/octet-stream';
+
             const response = new Response(imgContent.body, {
                 headers: {
-                    'Content-Type': imgContent.httpMetadata['content-type'] || 'application/octet-stream',
-                    'Content-Disposition': 'inline', 
+                    'Content-Type': contentType,
+                    'Content-Disposition': 'inline',
                 }
             });
             return response;
