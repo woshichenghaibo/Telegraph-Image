@@ -25,14 +25,16 @@ export async function onRequestPost(context) {  // Contents of context object
     if (!formData || !formData.file) {
         return new Response('No file uploaded', { status: 400 });
     }
-    const { fileName, fileContent } = formData.file;
+    const { fileName, fileContent, contentType } = formData.file;
 
     const fileId = new Date().getTime();
     const fileExtension = fileName.split('.').pop();
     const key=fileId+"."+fileExtension;
     const newFilePath=`/file/v1/${key}`
     try{
-        await env.img_static.put(newFilePath,fileContent);
+        await env.img_static.put(key, fileContent, {
+            metadata: { contentType }
+        });       
         // await env.img_url.put(key, "", {
         //     metadata: { ListType: "None", Label: "None", TimeStamp: fileId },
         // });  
@@ -55,7 +57,6 @@ async function parseMultipartFormData(request) {
     let buffer = '';
     let formData = {};
 
-
     while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -65,15 +66,23 @@ async function parseMultipartFormData(request) {
         buffer = parts.pop() || '';
 
         for (const part of parts) {
+            if (part.trim() === '' || part.startsWith('--')) continue;
+
             const [headersPart, body] = part.split('\r\n\r\n');
             if (headersPart && body) {
                 const headers = headersPart.split('\r\n');
                 const contentDispositionHeader = headers.find(header => header.startsWith('Content-Disposition:'));
+                const contentTypeHeader = headers.find(header => header.startsWith('Content-Type:'));
+                
                 if (contentDispositionHeader) {
                     const fileNameMatch = contentDispositionHeader.match(/filename="(.+?)"/);
                     if (fileNameMatch) {
                         const fileName = fileNameMatch[1];
-                        formData.file = { fileName, fileContent: body.slice(0, -2) };
+                        formData.file = { 
+                            fileName, 
+                            fileContent: body.slice(0, -2), 
+                            contentType: contentTypeHeader ? contentTypeHeader.split(':')[1].trim() : 'application/octet-stream' 
+                        };
                     }
                 }
             }
