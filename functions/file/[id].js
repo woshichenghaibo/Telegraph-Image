@@ -1,3 +1,10 @@
+function isFileNameAllDigits(filePath) {
+    const fileNameWithExtension = filePath.split('/').pop();
+    const fileName = fileNameWithExtension.split('.').shift(); 
+    const isAllDigits = /^\d+$/.test(fileName);
+    return isAllDigits;
+}
+
 export async function onRequest(context) {  // Contents of context object  
     const {
         request, // same as existing Worker API    
@@ -9,10 +16,8 @@ export async function onRequest(context) {  // Contents of context object
     } = context;
 
     const url = new URL(request.url);
-    const path = url.pathname + url.search
-    const time = new Date().time();
-
-    if (time >= 1725946746270) {
+    const path = url.pathname + url.search;
+    if (isFileNameAllDigits(path)) {
         const imgContent = await env.img_static.get(path);
         if (imgContent) {
             const response = new Response(imgContent.body, {
