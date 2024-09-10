@@ -33,9 +33,10 @@ export async function onRequestPost(context) {  // Contents of context object
    
     try{
         await env.img_static.put(newFilePath,fileContent);
-        await env.img_url.put(`${fileId}.${fileExtension}`, newFilePath, {
-            metadata: { ListType: "None", Label: "None", TimeStamp: new Date().time() },
-        });   
+        await env.img_url.put(`${fileId}.${fileExtension}`, "", {
+                metadata: { ListType: "None", Label: "None", TimeStamp: new Date().time()}
+            }
+        );   
      }catch(error){
         return new Response(`Upload fail`, { status: 400 });
     }
