@@ -14,7 +14,7 @@ export async function onRequestPost(context) {  // Contents of context object
     const cookiePassword = cookies.split(';').find(cookie => cookie.trim().startsWith('CFP_PASSWORD='));
     const extractedPassword = cookiePassword ? cookiePassword.split('=')[1].trim() : null;
     if (extractedPassword !== env.CFP_PASSWORD) {
-         //return new Response('Unauthorized: Invalid password', { status: 403 });
+         return new Response('Unauthorized: Invalid password', { status: 403 });
     }
     const clonedRequest = request.clone();
     await errorHandling(context);
