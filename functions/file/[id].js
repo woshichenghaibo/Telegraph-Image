@@ -20,25 +20,12 @@ export async function onRequest(context) {  // Contents of context object
     if (isFileNameAllDigits(path)) {
         const imgContent = await env.img_static.get(path);
         if (imgContent) {
-            const extension = url.search.split('.').pop();
-            const mimeTypes = {
-                'png': 'image/png',
-                'jpg': 'image/jpeg',
-                'jpeg': 'image/jpeg',
-                'gif': 'image/gif',
-                'mp4':'video/mp4'
-            };
-            const contentType = (httpMetadata && httpMetadata['content-type']) 
-                ? httpMetadata['content-type'] 
-                : mimeTypes[extension] || 'application/octet-stream';
-
-            const response = new Response(imgContent.body, {
-                headers: {
-                    'Content-Type': contentType,
-                    'Content-Disposition': 'inline'
-                }
+            const headers = new Headers();
+            imgContent.writeHttpMetadata(headers);
+            headers.set("etag", imgContent.httpEtag);
+            return new Response(imgContent.body, {
+              headers,
             });
-            return response;
         } else {
             response = new Response('File not found', { status: 404 });
             return response;
