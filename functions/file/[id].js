@@ -20,7 +20,7 @@ export async function onRequest(context) {  // Contents of context object
     if (isFileNameAllDigits(path)) {
         const imgContent = await env.img_static.get(path);
         if (imgContent) {
-            const extension = path.split('.').pop();
+            const extension = url.search.split('.').pop();
             const mimeTypes = {
                 'png': 'image/png',
                 'jpg': 'image/jpeg',
@@ -35,7 +35,7 @@ export async function onRequest(context) {  // Contents of context object
             const response = new Response(imgContent.body, {
                 headers: {
                     'Content-Type': contentType,
-                    'Content-Disposition': 'inline',
+                    'Content-Disposition': 'inline'
                 }
             });
             return response;
