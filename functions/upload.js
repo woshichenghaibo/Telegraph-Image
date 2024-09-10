@@ -24,7 +24,7 @@ export async function onRequestPost(context) {  // Contents of context object
     const formData = await parseMultipartFormData(clonedRequest);
 
     if (!formData || !formData.file) {
-        return new Response('No file uploaded', { status: 400 });
+        return new Response('No file uploaded ', { status: 400 });
     }
     const { fileName, fileContent } = formData.file;
 
