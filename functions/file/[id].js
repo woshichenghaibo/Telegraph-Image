@@ -23,6 +23,7 @@ export async function onRequest(context) {  // Contents of context object
             const response = new Response(imgContent.body, {
                 headers: {
                     'Content-Type': imgContent.httpMetadata['content-type'] || 'application/octet-stream',
+                    'Content-Disposition': 'inline', 
                 }
             });
             return response;
