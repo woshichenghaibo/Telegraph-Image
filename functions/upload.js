@@ -1,5 +1,4 @@
 import { errorHandling, telemetryData } from "./utils/middleware";
-import { v4 as uuidv4 } from 'uuid';
 
 export async function onRequestPost(context) {  // Contents of context object  
     const {
@@ -24,11 +23,11 @@ export async function onRequestPost(context) {  // Contents of context object
     const formData = await parseMultipartFormData(clonedRequest);
 
     if (!formData || !formData.file) {
-        return new Response('No file uploaded ', { status: 400 });
+        return new Response('No file uploaded', { status: 400 });
     }
     const { fileName, fileContent } = formData.file;
 
-    const fileId = uuidv4().replace(/-/g, '');
+    const fileId = new Date().getTime();
     const fileExtension = fileName.split('.').pop();
     const newFileName = `/file/v1/${fileId}.${fileExtension}`;
    
