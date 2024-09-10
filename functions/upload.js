@@ -30,7 +30,7 @@ export async function onRequestPost(context) {  // Contents of context object
     const fileId = new Date().getTime();
     const fileExtension = fileName.split('.').pop();
     const key=fileId+"."+fileExtension;
-    const newFilePath=`/file/v1/${key}`;
+    const newFilePath=`/file/${key}`;
     console.log(newFilePath);
     console.log(contentType);
     try{
