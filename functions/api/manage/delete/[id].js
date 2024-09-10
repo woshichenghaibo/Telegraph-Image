@@ -1,3 +1,9 @@
+function isFileNameAllDigits(filePath) {
+  const fileName = filePath.split('.').shift(); 
+  const isAllDigits = /^\d+$/.test(fileName);
+  return isAllDigits;
+}
+
 export async function onRequest(context) {
     // Contents of context object
     const {
@@ -11,6 +17,9 @@ export async function onRequest(context) {
     console.log(env)
     console.log(params.id)
     await env.img_url.delete(params.id);
+    if(isFileNameAllDigits(params.id)){
+        await env.img_static.delete("/file/"+params.id);
+    }
     const info = JSON.stringify(params.id);
     return new Response(info);
 
