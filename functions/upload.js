@@ -34,7 +34,9 @@ export async function onRequestPost(context) {  // Contents of context object
     console.log(newFilePath);
     console.log(contentType);
     try{
-        await env.img_static.put(newFilePath,request.body);       
+        await env.img_static.put(newFilePath, fileContent, {
+            metadata: { contentType }
+        });       
         // await env.img_url.put(key, "", {
         //     metadata: { ListType: "None", Label: "None", TimeStamp: fileId },
         // });  
@@ -73,16 +75,13 @@ async function parseMultipartFormData(request) {
                 const headers = headersPart.split('\r\n');
                 const contentDispositionHeader = headers.find(header => header.startsWith('Content-Disposition:'));
                 const contentTypeHeader = headers.find(header => header.startsWith('Content-Type:'));
-                
+
                 if (contentDispositionHeader) {
                     const fileNameMatch = contentDispositionHeader.match(/filename="(.+?)"/);
                     if (fileNameMatch) {
                         const fileName = fileNameMatch[1];
-                        formData.file = { 
-                            fileName, 
-                            fileContent: body.slice(0, -2), 
-                            contentType: contentTypeHeader ? contentTypeHeader.split(':')[1].trim() : 'application/octet-stream' 
-                        };
+                        const contentType = contentTypeHeader ? contentTypeHeader.split(':')[1].trim() : 'application/octet-stream';
+                        formData.file = { fileName, fileContent: body, contentType };
                     }
                 }
             }
