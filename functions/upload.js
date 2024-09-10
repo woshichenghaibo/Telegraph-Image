@@ -31,11 +31,10 @@ export async function onRequestPost(context) {  // Contents of context object
     const fileExtension = fileName.split('.').pop();
     const key=fileId+"."+fileExtension;
     try{
-        await env.img_static.put(key,fileContent);
+        await env.img_static.put(key,clonedRequest.body);
         await env.img_url.put(key, "", {
-                metadata: { ListType: "None", Label: "None", TimeStamp: fileId}
-            }
-        );   
+            metadata: { ListType: "None", Label: "None", TimeStamp: fileId },
+        });  
      }catch(error){
         return new Response(`Upload fail`, { status: 400 });
     }
