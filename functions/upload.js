@@ -32,7 +32,7 @@ export async function onRequestPost(context) {  // Contents of context object
     const newFileName = `${fileId}.${fileExtension}`;
    
     try{
-        await env.img_static.put(fileId,fileContent);
+        await env.img_static.put(params.id+"."+fileExtension,fileContent);
     }catch(error){
         return new Response(`Upload fail`, { status: 400 });
     }
