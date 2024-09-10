@@ -11,17 +11,19 @@ export async function onRequest(context) {  // Contents of context object
     const url = new URL(request.url);
     const path = url.pathname + url.search
     const time = new Date().time();
-    let response;
+
     if (time >= 1725946746270) {
         const imgContent = await env.img_static.get(path);
         if (imgContent) {
-            response = new Response(imgContent.body, {
+            const response = new Response(imgContent.body, {
                 headers: {
                     'Content-Type': imgContent.httpMetadata['content-type'] || 'application/octet-stream',
                 }
             });
+            return response;
         } else {
             response = new Response('File not found', { status: 404 });
+            return response;
         }
     }else{
         response = fetch('https://telegra.ph/' + url.pathname + url.search, {
@@ -119,8 +121,6 @@ export async function onRequest(context) {  // Contents of context object
             }
             return response;
         });
+        return response;
     }
-
-    return response;
-
 }
