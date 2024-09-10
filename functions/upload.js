@@ -36,14 +36,12 @@ export async function onRequestPost(context) {  // Contents of context object
     try{
         await env.img_static.put(newFilePath, fileContent, {
             metadata: { 
-                'Content-Type': contentType,
-                'Uploaded-At': new Date().toISOString(),
-                'Custom-Metadata': key
+                'Content-Type': contentType
             }
         });       
-        // await env.img_url.put(key, "", {
-        //     metadata: { ListType: "None", Label: "None", TimeStamp: fileId },
-        // });  
+        await env.img_url.put(key, "", {
+            metadata: { ListType: "None", Label: "None", TimeStamp: fileId },
+        });  
      }catch(error){
         return new Response(`Upload fail`, { status: 400 });
     }
