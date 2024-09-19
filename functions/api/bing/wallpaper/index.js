@@ -8,14 +8,25 @@ export async function onRequest(context) {
       next, // used for middleware or to fetch assets
       data, // arbitrary space for passing data between middlewares
     } = context;
-    const res = await fetch(`https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1`);
-    const bing_data = await res.json();
-    const return_data={
-        "status":true,
-        "message":"操作成功",
-        "data": bing_data.images
-    }
-    const info = JSON.stringify(return_data);
-    return new Response(info);
 
-  }
+    // 固定的图片URL
+    const fixedImageUrl = 'https://img.guao.de/i/189Cloud/ImgBed/2024/09/19/llr1ae.jpg';
+
+    // 创建一个包含固定图片URL的images数组
+    const bing_data = {
+        images: [
+            { url: fixedImageUrl }
+        ]
+    };
+
+    const return_data = {
+        "status": true,
+        "message": "操作成功",
+        "data": bing_data.images
+    };
+
+    const info = JSON.stringify(return_data);
+    return new Response(info, {
+        headers: { 'content-type': 'application/json' }
+    });
+}
