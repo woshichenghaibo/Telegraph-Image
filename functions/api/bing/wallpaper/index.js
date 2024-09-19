@@ -10,7 +10,7 @@ export async function onRequest(context) {
     } = context;
 
     // 固定的图片URL
-    const fixedImageUrl = 'https://img.guao.de/i/189Cloud/ImgBed/2024/09/19/llr1ae.jpg';
+    const fixedImageUrl = 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png';
 
     // 创建一个包含固定图片URL的images数组
     const bing_data = {
